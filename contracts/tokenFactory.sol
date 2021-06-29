@@ -1,5 +1,6 @@
-pragma solidity 0.5.16;
-pragma experimental ABIEncoderV2;
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity 0.8.0;
+//pragma experimental ABIEncoderV2;
 import "./userToken.sol";
 
 contract TokenFactory{
@@ -64,7 +65,7 @@ contract TokenFactory{
               symbol,
               decimals,
                maxAllowedPercent,
-               now);
+               block.timestamp);
 
     }
     
@@ -77,14 +78,9 @@ contract TokenFactory{
     
    
 
-    function USerToken(address _address) public view returns(Token memory){
+    function allUSerTokens(address _address) public view returns(Token memory){
        return userToToken[_address];
     }
-
-    function myToken() public view onlyOwner returns(Token memory){
-        return userToToken(msg.sender);
-    }
-
     
 
     
