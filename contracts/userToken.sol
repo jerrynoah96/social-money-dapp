@@ -129,6 +129,8 @@ contract UserToken is Context, Ownable {
   event Transfer(address indexed from, address indexed to, uint256 value);
    event Approval(address indexed owner, address indexed spender, uint256 value);
    event AutoMint(uint256 addedAmount);
+   
+   address token_owner;
 
   constructor(string memory tokenName,
     string memory tokenSymbol,
@@ -141,6 +143,7 @@ contract UserToken is Context, Ownable {
     _totalSupply = 1000000 * (10**_decimals);
     _balances[msg.sender] = _totalSupply;
     _maxAllowedBalance = _totalSupply * maxAllowedPercent/100;
+    token_owner = msg.sender;
     
     emit Transfer(address(0), msg.sender, _totalSupply);
   }
@@ -149,7 +152,7 @@ contract UserToken is Context, Ownable {
    * @dev Returns the bep token owner.
    */
   function Owner() external view returns (address) {
-    return owner();
+    return token_owner;
   }
 
   /**
@@ -183,7 +186,11 @@ contract UserToken is Context, Ownable {
   /**
    * @dev See {ERC20-balanceOf}.
    */
-  function balanceOf(address account) public view returns (uint256) {
+  function _balanceOf(address account) public view returns (uint256) {
+    return _balances[account];
+  }
+  
+   function balanceOf(address account) external view returns (uint256) {
     return _balances[account];
   }
 
@@ -195,7 +202,7 @@ contract UserToken is Context, Ownable {
    * - `recipient` cannot be the zero address.
    * - the caller must have a balance of at least `amount`.
    */
-  function _transfer(address recipient, uint256 amount) external returns (bool) { 
+  function transfer(address recipient, uint256 amount) external returns (bool) { 
     _transfer(_msgSender(), recipient, amount);
     return true;
   }
@@ -214,7 +221,7 @@ contract UserToken is Context, Ownable {
    *
    * - `spender` cannot be the zero address.
    */
-  function _approve(address spender, uint256 amount) external returns (bool) {
+  function approve(address spender, uint256 amount) external returns (bool) {
     _approve(_msgSender(), spender, amount);
     return true;
   }
@@ -275,8 +282,10 @@ contract UserToken is Context, Ownable {
   }
   
   
-  function excludeAddress(address _whale) public onlyOwner{
+  function excludeAddress(address _whale) external returns(bool) {
+     
       excludedAddress[_whale] = true;
+      return true;
   }
 
   
