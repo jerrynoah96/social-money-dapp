@@ -132,7 +132,7 @@ contract UserToken is Context, Ownable {
    
    address token_owner;
 
-  constructor(string memory tokenName,
+  constructor(address _user,string memory tokenName,
     string memory tokenSymbol,
     uint8 tokenDecimals,
     uint256 maxAllowedPercent) public {
@@ -141,11 +141,11 @@ contract UserToken is Context, Ownable {
     _symbol = tokenSymbol;
     _decimals = tokenDecimals;
     _totalSupply = 1000000 * (10**_decimals);
-    _balances[msg.sender] = _totalSupply;
+    _balances[_user] = _totalSupply;
     _maxAllowedBalance = _totalSupply * maxAllowedPercent/100;
-    token_owner = msg.sender;
+    token_owner = _user;
     
-    emit Transfer(address(0), msg.sender, _totalSupply);
+    emit Transfer(address(0), _user, _totalSupply);
   }
 
   /**
@@ -238,7 +238,7 @@ contract UserToken is Context, Ownable {
    * - the caller must have allowance for `sender`'s tokens of at least
    * `amount`.
    */
-  function _transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
+  function transferFrom(address sender, address recipient, uint256 amount) external returns (bool) {
     _transfer(sender, recipient, amount);
     _approve(sender, msg.sender, _allowances[sender][msg.sender] - amount);
     return true;

@@ -43,7 +43,7 @@ contract TokenFactory{
     uint256 maxAllowedPercent) public {
         
         //create a new TokenContract
-        UserToken userToken = new UserToken(name,
+        UserToken userToken = new UserToken(msg.sender, name,
          symbol, decimals, maxAllowedPercent);
 
        
@@ -100,7 +100,7 @@ contract TokenFactory{
         
     }
     
-    function transfer(address _recipient, uint256 _amount) public {
+    function transfer(address _recipient, uint256 _amount) public payable {
          require(msg.sender == userToToken[msg.sender]._owner, 'you are not the owner');
        address _tokenAddress = userToToken[msg.sender]._tokenAddress;
         IERC20 tokenInstance = IERC20(_tokenAddress);
